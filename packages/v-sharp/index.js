@@ -1,13 +1,14 @@
 (function (global, name, factory) {
     "use strict"
     if (typeof exports === 'object' && typeof module !== 'undefined') {
-        module.exports = factory();
+        module.exports = factory(require('./lib/toast'))
     } else if (typeof define === 'function' && (define.amd || define.cmd)) {
-        define(factory);
+        define(factory)
     } else {
         global[name] = factory.apply(this);
     }
-}(this, "vSharp", function () {
+}(this, "vSharp", function (obj) {
+    console.log(obj, 112233);
     var params = {
         appVersion: navigator.appVersion,
         minAppVersion: navigator.appVersion.toLowerCase(),
@@ -119,7 +120,8 @@
         setSession,
         getSession,
         delSession,
-        delSessionMulti
+        delSessionMulti,
+        Toast: obj.install,
     }
 
 }));
