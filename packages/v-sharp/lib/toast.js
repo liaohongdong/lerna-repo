@@ -1,3 +1,4 @@
+var Common = require('./common')
 var Toast = {}
 Toast.install = function (Vue, options) {
     console.log(options)
@@ -26,7 +27,7 @@ Toast.install = function (Vue, options) {
         duration: '2500'         // 持续时间
     }
     for (let property in options) {
-        opt[property] = options[property];  // 使用 options 的配置
+        opt[property] = options[property]  // 使用 options 的配置
     }
     Vue.prototype.$$toast = (tips, type) => {
         if (type) {
@@ -40,9 +41,10 @@ Toast.install = function (Vue, options) {
             template: '<div class="vSharpToast toast-' + opt.defaultType + '">' + tips + '</div>'
         })
         let tpl = new toastTpl().$mount().$el
+        Common.backLayer()
         document.body.appendChild(tpl)
         setTimeout(function () {
-            document.body.removeClild(tpl)
+            // document.body.removeClild(tpl)
         }, 2500)
     }
     ['bottom', 'center', 'top'].forEach(type => {
