@@ -1,7 +1,8 @@
 var Common = require('./common')
 var Toast = {}
+
 Toast.install = function (Vue, options) {
-    console.log(options)
+    // console.log(options)
     // 1. 添加全局方法或属性
     // Vue.myGlobalMethod = function () {
     // 逻辑...
@@ -29,10 +30,8 @@ Toast.install = function (Vue, options) {
     for (let property in options) {
         opt[property] = options[property]  // 使用 options 的配置
     }
-    Vue.prototype.$$toast = (tips, type) => {
-        if (type) {
-            opt.defaultType = type // 如果有传type，位置则设为该type
-        }
+    Vue.prototype.$$toast = (tips, time, type) => {
+        opt.defaultType = type || 'buttom' // 如果有传type，位置则设为该type
         if (document.getElementsByClassName('vSharpToast').length) {
             // 如果toast还在，则不再执行
             return
@@ -41,11 +40,13 @@ Toast.install = function (Vue, options) {
             template: '<div class="vSharpToast toast-' + opt.defaultType + '">' + tips + '</div>'
         })
         let tpl = new toastTpl().$mount().$el
-        Common.backLayer()
+        Common.backLayer(time)
         document.body.appendChild(tpl)
         setTimeout(function () {
-            // document.body.removeClild(tpl)
-        }, 2500)
+            ['.v-sharp-layer', '.vSharpToast'].forEach((e, i) => {
+                document.querySelector(e) ? document.querySelector(e).remove() : ''
+              })
+        }, time || 2500)
     }
     ['bottom', 'center', 'top'].forEach(type => {
         Vue.prototype.$$toast[type] = (tips) => {
@@ -53,4 +54,7 @@ Toast.install = function (Vue, options) {
         }
     })
 }
-module.exports = Toast
+
+export {
+  Toast,
+}

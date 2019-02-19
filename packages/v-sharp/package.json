@@ -1,6 +1,6 @@
 {
   "name": "v-sharp",
-  "version": "1.0.20",
+  "version": "1.0.31",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/liaohongdong/v-sharp/issues"
   },
-  "homepage": "https://github.com/liaohongdong/v-sharp#readme"
+  "homepage": "https://github.com/liaohongdong/v-sharp#readme",
+  "dependencies": {
+    "gitment": "^0.0.3"
+  }
 }

@@ -121,7 +121,7 @@
         getSession,
         delSession,
         delSessionMulti,
-        Toast: obj.install,
+        Toast: obj.Toast.install,
     }
 
 }));
