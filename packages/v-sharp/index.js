@@ -8,7 +8,6 @@
         global[name] = factory.apply(this);
     }
 }(this, "vSharp", function (obj) {
-    console.log(obj, 112233);
     var params = {
         appVersion: navigator.appVersion,
         minAppVersion: navigator.appVersion.toLowerCase(),
