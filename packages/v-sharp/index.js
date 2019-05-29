@@ -31,6 +31,15 @@
         QQ: params.appVersion.match(/\sQQ/i) === ' qq', // 是否QQ
     }
 
+    var arrayEqual = function(arr1, arr2) {
+        if (arr1 === arr2) return true;
+        if (arr1.length != arr2.length) return false;
+        for (var i = 0; i < arr1.length; ++i) {
+            if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
+    }
+
     var setLocal = function (key, val, expired) {
         if (['string', 'number'].indexOf((typeof key)) == -1) throw new Error('this key not string or number type, please check the key type')
         if (['object', 'function'].indexOf((typeof val)) > -1) {
@@ -109,9 +118,83 @@
         }
     }
 
+    var throttle = function(delay, noTrailing, callback, debounceMode) {
+        var timeoutID;
+        var lastExec = 0;
+        if (typeof noTrailing !== 'boolean') {
+            debounceMode = callback;
+            callback = noTrailing;
+            noTrailing = undefined;
+        }
+        function wrapper() {
+            var self = this;
+            var elapsed = Number(new Date()) - lastExec;
+            var args = arguments;
+            function exec() {
+                lastExec = Number(new Date());
+                callback.apply(self, args);
+            }
+            function clear() {
+                timeoutID = undefined;
+            }
+            if (debounceMode && !timeoutID) {
+                exec();
+            }
+            if (timeoutID) {
+                clearTimeout(timeoutID);
+            }
+            if (debounceMode === undefined && elapsed > delay) {
+                exec();
+            } else if (noTrailing !== true) {
+                timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
+            }
+        }
+        return wrapper;
+    };
+
+    var debounce = function(delay, atBegin, callback) {
+        return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
+    };
+
+    var isEmptyObject = function (obj) {
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj))
+            return false
+        return !Object.keys(obj).length
+    }
+    
+    var deepClone = function (values) {
+        var copy;
+        // Handle the 3 simple types, and null or undefined
+        if (null == values || "object" != typeof values) return values;
+        // Handle Date
+        if (values instanceof Date) {
+            copy = new Date();
+            copy.setTime(values.getTime());
+            return copy;
+        }
+        // Handle Array
+        if (values instanceof Array) {
+            copy = [];
+            for (var i = 0, len = values.length; i < len; i++) {
+                copy[i] = deepClone(values[i]);
+            }
+            return copy;
+        }
+        // Handle Object
+        if (values instanceof Object) {
+            copy = {};
+            for (var attr in values) {
+                if (values.hasOwnProperty(attr)) copy[attr] = deepClone(values[attr]);
+            }
+            return copy;
+        }
+        throw new Error("Unable to copy values! Its type isn't supported.");
+    }
+
     return {
         params,
         client,
+        arrayEqual,
         setLocal,
         getLocal,
         delLocal,
@@ -120,6 +203,9 @@
         getSession,
         delSession,
         delSessionMulti,
+        throttle,
+        debounce,
+        isEmptyObject,
         Toast: obj.Toast.install,
     }
 
